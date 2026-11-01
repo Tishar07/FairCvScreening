@@ -3,3 +3,4 @@ alembic/versions
 __pycache__
 alembic/__pycache__
 models/__pycache__
+tests

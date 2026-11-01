@@ -1,12 +1,21 @@
-import NavbarComponent from './Components/NavbarComponent'
-import ChatComponent from './Components/ChatComponent'
+import { Routes, Route } from "react-router-dom";
+
+import AuthPage from  "./Pages/AuthPage"
+import DashboardPage from "./Pages/DashboardPage"
+import ReviewCVPage from "./Pages/ReviewCvPage";
+
+
+
 function App() {
 
   return (
-    <>
-      <NavbarComponent/>
-      <ChatComponent/>
-    </>
+    <Routes>
+      <Route path="/" element={<DashboardPage/>}/>
+      <Route path="/Auth" element={<AuthPage/>}/>
+      <Route path="/ReviewCV" element={<ReviewCVPage/>}/>
+      
+    </Routes>
+
   )
 }
 

@@ -1,120 +1,177 @@
-import { useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
-import "../Style/chat.css"
-const jobs = [
-  "Frontend Developer",
-  "Backend Developer",
-  "UI/UX Designer",
-];
+import { useEffect, useRef, useState } from "react";
+import { Briefcase } from "react-bootstrap-icons";
+import { useSendChatMessage } from "../Hooks/useChat";
 
-export default function ChatComponent() {
-  const [selectedJob, setSelectedJob] = useState(jobs[0]);
-  const [input, setInput] = useState("");
-  const [pdf, setPdf] = useState(null);
+import ChatBarComponent from "./ChatBarComponent";
+import "../Style/ChatComponent.css";
 
-  const [messages, setMessages] = useState([
-    {
-      sender: "ai",
-      text: "Hi! I'm FairCV. Upload a CV or ask me to review an applicant.",
-    },
-  ]);
 
-  const sendMessage = () => {
-    if (!input.trim() && !pdf) return;
+function ChatComponent({ currentLogUserId ,newConversation=false}) {
 
-    const newMessages = [...messages];
+    const [messages, setMessages] = useState([]);
 
-    if (input.trim()) {
-      newMessages.push({
-        sender: "user",
-        text: input,
-      });
-    }
+    const messagesContainerRef = useRef(null);
 
-    if (pdf) {
-      newMessages.push({
-        sender: "user",
-        text: `Uploaded CV: ${pdf.name}`,
-      });
-    }
+    const shouldAutoScroll = useRef(true);
 
-    // Dummy AI reply
-    newMessages.push({
-      sender: "ai",
-      text: `I'll analyze this for the "${selectedJob}" position.`,
-    });
+    const { mutateAsync: sendChat, isPending } = useSendChatMessage();
 
-    setMessages(newMessages);
-    setInput("");
-    setPdf(null);
-  };
+    const handleScroll = () => {
+        const container = messagesContainerRef.current;
+        if (!container) {
+            return;
+        }
+        const distanceFromBottom =
+            container.scrollHeight -
+            container.scrollTop -
+            container.clientHeight;
 
-  return (
-    <Card className="shadow rounded-4 p-3" style={{ height: "90vh" }}>
-      {/* Header */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        
-        <Form.Select
-          style={{ width: "220px" }}
-          value={selectedJob}
-          onChange={(e) => setSelectedJob(e.target.value)}
-        >
-          {jobs.map((job) => (
-            <option key={job}>{job}</option>
-          ))}
-        </Form.Select>
-      </div>
+        shouldAutoScroll.current = distanceFromBottom < 100;
+    };
 
-      {/* Chat Messages */}
-      <div className="chat-area flex-grow-1 mb-3">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`d-flex mb-3 ${
-              msg.sender === "user"
-                ? "justify-content-end"
-                : "justify-content-start"
-            }`}
-          >
-            <div
-              className={`message ${
-                msg.sender === "user"
-                  ? "user-message"
-                  : "ai-message"
-              }`}
-            >
-              {msg.text}
+
+    useEffect(() => {
+        const container = messagesContainerRef.current;
+        if (!container) {
+            return;
+        }
+        if (shouldAutoScroll.current) {
+
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: "smooth"
+            });
+        }
+    }, [messages]);
+
+
+    const handleSend = async ({ message, file, jobId, job }) => {
+        const userMessage = {
+            id: Date.now(),
+            role: "user",
+            content: message,
+            fileName: file ? file.name : null,
+            jobTitle: job?.title || (typeof job === "string" ? job : null)
+        };
+
+        setMessages((previous) => [
+            ...previous,
+            userMessage
+        ]);
+
+        shouldAutoScroll.current = true;
+        try {
+
+            const data = await sendChat({
+                message,
+                file,
+                currentLogUserId,
+                jobId: jobId || job?.id,
+                job
+            });
+
+            const contentText = Array.isArray(data) 
+                ? data[0]?.output 
+                : (data?.output || data?.message);
+
+            const aiMessage = {
+                id: Date.now() + 1,
+                role: "ai",
+                content: contentText || "Received response."
+            };
+
+            setMessages((previous) => [
+                ...previous,
+                aiMessage
+            ]);
+
+        } catch (error) {
+
+            console.error(
+                "Chat API error:",
+                error.response?.data || error.message
+            );
+
+            const errorMessage = {
+                id: Date.now() + 1,
+                role: "ai",
+                content:
+                    "Sorry, something went wrong while processing your request."
+            };
+
+            setMessages((previous) => [
+                ...previous,
+                errorMessage
+            ]);
+        }
+    };
+
+
+    return (
+        <div className="chat-panel">
+
+            <div ref={messagesContainerRef} className="chat-messages" onScroll={handleScroll}>
+                {messages.length === 0 && !isPending && (
+                    <div className="chat-empty-state">
+                        <div className="empty-state-title">Welcome to ThemisCV</div>
+                        <div className="empty-state-subtitle">
+                            Ask questions about applicants, analyze CVs, or upload candidate documents to get started.
+                        </div>
+                    </div>
+                )}
+
+                {messages.map((message) => (
+                    <div
+                        key={message.id}
+                        className={`message-row ${message.role}`}
+                    >
+                        {message.role === "user" ? (
+                            <div className="user-message">
+                                {message.jobTitle && (
+                                    <div className="user-job-tag">
+                                        <Briefcase size={12} />
+                                        <span>{message.jobTitle}</span>
+                                    </div>
+                                )}
+                                <div>
+                                    {message.content}
+                                </div>
+                                {message.fileName && (
+                                    <div className="user-file">
+                                        {message.fileName}
+                                    </div>
+                                )}
+                            </div>
+
+                        ) : (
+                            <div className="ai-message">
+                                {message.content}
+                            </div>
+                        )}
+                    </div>
+                ))}
+
+                {isPending && (
+                    <div className="message-row ai">
+
+                        <div className="ai-message loading-message">
+                            <span>Thinking...</span>
+                        </div>
+
+                    </div>
+                )}
+
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Input Area */}
-      <div className="border-top pt-3">
-        <Form.Control
-          type="file"
-          accept=".pdf"
-          className="mb-2"
-          onChange={(e) => setPdf(e.target.files[0])}
-        />
-
-        {pdf && (
-          <small className="text-muted d-block mb-2">
-            {pdf.name}
-          </small>
-        )}
-
-        <div className="d-flex gap-2">
-          <Form.Control
-            placeholder="Message FairCV..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          />
-
-          <Button onClick={sendMessage}>Send</Button>
+            
+            <div className="chat-input-container">
+                <ChatBarComponent
+                    onSend={handleSend}
+                    loading={isPending}
+                />
+            </div>
+            
         </div>
-      </div>
-    </Card>
-  );
+    );
 }
+
+export default ChatComponent;

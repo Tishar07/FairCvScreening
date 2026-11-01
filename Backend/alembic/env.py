@@ -16,6 +16,8 @@ from models.History import History
 from models.Job import Job
 from models.Job_Skill import Job_Skill
 from models.Skill import Skill
+from models.Conversation import Conversation
+from models.Message import Message
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -97,3 +99,4 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+

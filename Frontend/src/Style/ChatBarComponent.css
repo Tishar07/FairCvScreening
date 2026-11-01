@@ -1,0 +1,409 @@
+.chat-bar-wrapper {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   ERROR ALERT
+   ========================================= */
+
+.job-error-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    width: fit-content;
+    max-width: 100%;
+
+    margin-bottom: 8px;
+    padding: 8px 14px;
+
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 12px;
+
+    color: #fca5a5;
+    font-size: 13px;
+    font-weight: 500;
+
+    animation: fadeInSlide 0.2s ease-out;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   SELECTED FILE
+   ========================================= */
+
+.selected-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    width: fit-content;
+    max-width: 100%;
+
+    margin-bottom: 8px;
+    padding: 8px 12px;
+
+    background: #f1f1f1;
+    border-radius: 12px;
+
+    color: #333;
+    font-size: 14px;
+}
+
+.selected-file-name {
+    max-width: 300px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.remove-file-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: #666;
+
+    cursor: pointer;
+}
+
+.remove-file-button:hover {
+    color: #222;
+}
+
+/* =========================================
+   CHAT BAR
+   ========================================= */
+
+.chat-bar {
+    width: 100%;
+    min-height: 60px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 8px 10px;
+
+    background: #313131;
+
+    border: 1px solid #444;
+    border-radius: 30px;
+
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chat-bar:focus-within {
+    border-color: #666;
+}
+
+.chat-bar.chat-bar-error {
+    border-color: rgba(239, 68, 68, 0.7);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* =========================================
+   JOB SELECT DROPDOWN
+   ========================================= */
+
+.job-select-dropdown {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin: 0 4px;
+}
+
+.job-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 14px;
+
+    border-radius: 20px;
+    border: 1px solid transparent;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+    outline: none !important;
+    box-shadow: none !important;
+
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Override Bootstrap dropdown caret */
+.job-dropdown-toggle::after {
+    display: none !important;
+}
+
+/* When no job is selected */
+.job-dropdown-toggle.no-job {
+    background: #252525;
+    color: #b0b0b0;
+    border-color: #4a4a4a;
+}
+
+.job-dropdown-toggle.no-job:hover:not(:disabled) {
+    background: #383838;
+    color: #ffffff;
+    border-color: #666666;
+}
+
+/* When a job IS selected */
+.job-dropdown-toggle.has-job {
+    background: rgba(59, 130, 246, 0.16);
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.job-dropdown-toggle.has-job:hover:not(:disabled) {
+    background: rgba(59, 130, 246, 0.25);
+    color: #bfdbfe;
+    border-color: rgba(59, 130, 246, 0.6);
+}
+
+/* When in error state */
+.job-dropdown-toggle.job-error {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.18) !important;
+    color: #fca5a5 !important;
+    animation: shakeError 0.3s ease-in-out;
+}
+
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+.job-toggle-icon {
+    flex-shrink: 0;
+}
+
+.job-toggle-label {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.job-chevron-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+}
+
+.job-select-dropdown.show .job-chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.job-dropdown-menu {
+    background-color: #242424 !important;
+    border: 1px solid #3d3d3d !important;
+    border-radius: 14px !important;
+    padding: 6px !important;
+
+    min-width: 280px !important;
+    max-width: 380px !important;
+    max-height: 280px;
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+    margin-bottom: 10px !important;
+    z-index: 1050;
+}
+
+.job-menu-header {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.6px !important;
+    text-transform: uppercase !important;
+    color: #888888 !important;
+    padding: 6px 12px 4px !important;
+}
+
+.job-menu-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    width: 100%;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+
+    color: #e5e5e5 !important;
+    font-size: 13px !important;
+
+    background: transparent;
+    border: none;
+    text-align: left;
+    transition: background-color 0.15s ease !important;
+}
+
+.job-menu-item:hover,
+.job-menu-item:focus {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+}
+
+.job-menu-item.active {
+    background-color: #1e3a8a !important;
+    color: #ffffff !important;
+}
+
+.job-item-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.job-item-title {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.job-item-dept {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.job-item-check {
+    margin-left: 8px;
+    color: #60a5fa;
+    flex-shrink: 0;
+}
+
+.job-clear-item {
+    color: #f87171 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 13px !important;
+}
+
+.job-clear-item:hover {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #fca5a5 !important;
+}
+
+.job-menu-divider {
+    border-color: #3a3a3a !important;
+    margin: 4px 0 !important;
+}
+
+/* =========================================
+   INPUT
+   ========================================= */
+
+.chat-input {
+    flex: 1;
+
+    min-width: 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    padding: 0 12px;
+
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.chat-input::placeholder {
+    color: #888;
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.chat-bar-button,
+.send-button {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+    transition: background 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+}
+
+/* Upload */
+
+.chat-bar-button {
+    background: transparent;
+    color: #777;
+}
+
+.chat-bar-button:hover:not(:disabled) {
+    background: #3e3e3e;
+    color: #ddd;
+}
+
+/* Send */
+
+.send-button {
+    background: #ffffff;
+    color: #181818;
+}
+
+.send-button:hover:not(:disabled) {
+    background: #e0e0e0;
+    transform: scale(1.04);
+}
+
+.send-button:disabled,
+.chat-bar-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: #282828;
+    color: #666;
+    transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .job-toggle-label {
+        max-width: 100px;
+    }
+
+    .job-dropdown-menu {
+        min-width: 230px !important;
+    }
+}

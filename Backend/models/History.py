@@ -9,6 +9,7 @@ class History(Base):
     user_id = Column(Integer,ForeignKey("users.id"),nullable=False)
     application_id =Column(Integer,ForeignKey("applications.id"),nullable=False)
     action = Column(String)
+    created_by =Column(Integer,ForeignKey("users.id"),nullable=False)
     created_at =Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

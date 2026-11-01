@@ -6,3 +6,4 @@ class Job_Skill(Base):
 
     skill_id =Column(Integer,ForeignKey("skills.id"),primary_key=True)
     job_id =Column(Integer,ForeignKey("jobs.id"),primary_key=True)
+    created_by =Column(Integer,ForeignKey("users.id"),nullable=False)

@@ -3,39 +3,40 @@ import {
   Container,
   Nav,
   NavDropdown,
-  Button,
 } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { NavLink } from "react-router-dom";
 import "../Style/navbar.css"
+import ThemisLogo from "../Assets/ThemisLogo.png"
 
-
-function NavbarComponent() {
+function NavbarComponent({ sticky = "top", fixed }) {
   return (
-<Navbar
+    <Navbar
       expand="lg"
       className="shadow-lg py-3 modern-navbar"
       variant="dark"
-      fixed="top"
+      sticky={sticky}
+      {...(fixed ? { fixed } : {})}
     >
       <Container>
         {/* Logo */}
         <Navbar.Brand href="/" className="fw-bold fs-4 d-flex align-items-center">
-          <div className="logo-circle me-2">
-            <i className="bi bi-file-earmark-person-fill"></i>
+          <div className="">
+            <img src={ThemisLogo} alt="" width={45} height={45}/>
           </div>
-          FairCV
+          ThemisCV
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="main-navbar" />
 
         <Navbar.Collapse id="main-navbar">
           <Nav className="mx-auto gap-2">
-            <Nav.Link href="#" className="nav-item-custom active">
+            <Nav.Link as={NavLink} to="/" end className="nav-item-custom">
               <i className="bi bi-grid me-2"></i>
               Dashboard
             </Nav.Link>
 
-            <Nav.Link href="#" className="nav-item-custom">
+            <Nav.Link as={NavLink} to="/ReviewCV" end className="nav-item-custom">
               <i className="bi bi-file-earmark-text me-2"></i>
               Review CVs
             </Nav.Link>
@@ -43,7 +44,7 @@ function NavbarComponent() {
             <NavDropdown
               title={
                 <>
-                  <i className="bi bi-briefcase me-2"></i>
+                  <i className="bi bi-briefcase me-2 "></i>
                   Job Processing
                 </>
               }
@@ -70,11 +71,15 @@ function NavbarComponent() {
           </Nav>
 
           {/* Right Side */}
-          <div className="d-flex align-items-center gap-3">
-            <div className="profile-avatar">
-              <i className="bi bi-person-fill"></i>
+          
+            <div className="d-flex align-items-center gap-3">
+              <Nav.Link as={Nav.Link} to="/Auth" end >
+                <div className="profile-avatar">
+                  <i className="bi bi-person-fill"></i>
+                </div>
+              </Nav.Link>
             </div>
-          </div>
+        
         </Navbar.Collapse>
       </Container>
     </Navbar>

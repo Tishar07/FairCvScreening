@@ -12,6 +12,7 @@ class Application(Base):
     cv_id =Column(Integer,ForeignKey("cvs.id"),nullable=False)
     score = Column(Float,nullable=False)
     status = Column(String,nullable=False)
+    created_by =Column(Integer,ForeignKey("users.id"),nullable=False)
     created_at =Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
